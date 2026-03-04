@@ -1,0 +1,26 @@
+{
+    "Hello!": "Hallo",
+    "Reset Password Notification": "Wachtwoord reset",
+    "You are receiving this email because we received a password reset request for your account.": "Je krijgt deze email na een verzoek om je wachtwoord opnieuw in te stellen.",
+    "Reset Password": "Reset wachtwoord",
+    "This password reset link will expire in :count minutes.": "De link blijft :count minuten geldig.",
+    "Regards,": "Met vriendelijke groet,",
+    "If you did not request a password reset, no further action is required.": "Als je deze aanvraag niet zelf hebt gedaan, mag je deze mail negeren.",
+    "If you're having trouble clicking the \":actionText\" button, copy and paste the URL below\ninto your web browser:": "Als de \":actionText\" knop niet werkt, kan je ook deze link copy-pasten: ",
+    "All rights reserved.": "Alle rechten voorbehouden.",
+    "throttled": "Wacht u het mailtje voor u opnieuw probeerd.",
+	
+    "A failed login to your account": "Iemand heeft met uw account proberen in te loggen",
+    "Account:": "Gebruiker:",
+    "Browser:": "Browser :",
+    "Hello!": "Hallo,",
+    "If this was you, you can ignore this alert. If you suspect any suspicious activity on your account, please change your password.": "Als je dit zelf was, kun je deze melding negeren. Als dit een verdachte login pagina is, graag het wachtwoord van je account aanpassen.",
+    "IP Address:": "IP :",
+    "Location:": "Locatie :",
+    "Regards,": "Met vriendelijke groet,",
+    "There has been a failed login attempt to your :app account.": "Er is een foute login poging gedaan op :app.",
+    "Time:": "Tijd :",
+    "Unknown City": "Onbekende plaats",
+    "Unknown State": "Onbekende State",
+    "Your :app account logged in from a new device.": "Je :app account is ingelogd via een nieuw apparat."
+}

@@ -1,0 +1,25 @@
+Naam
+
+Super Admin 90
+ alles behalve activty log en creatorhistory
+
+Geen Recht 0
+
+Beheerder 14
+ Agency -> bekijken, aanmaken, bekijk elke, bewerken
+ clothing -> alles
+
+Verzamelpunt 2
+ collector -> bekijk alle, bewerken
+
+Maakster 7
+ creator -> bekijk elke, bewerken, verwijder elke
+ creatorhistory -> bekijk elke
+ offer -> bekijk elke, bewerken
+ paginas ->widged
+
+Gebruikers Beheer 7
+ User -> bekijken, aanmaken, herstellen, verwijderen, bekijke elke, bewerken, herstel elke
+
+Afgehandeld 2
+ Completed -> bekijk alle, bewerken

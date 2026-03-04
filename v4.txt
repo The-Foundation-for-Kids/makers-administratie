@@ -1,0 +1,17 @@
+php artisan migrate:fresh --seed
+
+php artisan shield:setup --fresh --verbose
+
+php artisan shield:super-admin --panel=admin
+
+php artisan shield:seeder
+
+php artisan shield:generate --all --panel=admin --option=policies_and_permissions
+
+php artisan shield:seeder --generate --force
+
+  "nunomaduro/collision": "^8.0",
+  "spatie/laravel-query-builder": "^5.2"
+
+
+https://www.geoapify.com/geocoding-api

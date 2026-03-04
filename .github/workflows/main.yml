@@ -1,0 +1,83 @@
+name: scp files
+on:
+  push:
+    branches:
+      - prod
+      - test  # Set a branch name to trigger deployment
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set env BRANCH
+        run: echo "BRANCH=$(echo $GITHUB_REF | cut -d'/' -f 3)" >> $GITHUB_ENV
+
+      - name: Set env NEED
+        run: |
+          if [[ $BRANCH == 'prod' && $GITHUB_EVENT_NAME == 'push' ]]; then
+              echo "LOCATION=prod" >> "$GITHUB_ENV"
+              echo "DIRECTORY=kledingmaken.thefoundationforkids.com" >> "$GITHUB_ENV"
+          elif  [[ $BRANCH == 'test' && $GITHUB_EVENT_NAME == 'push' ]]; then
+              echo "LOCATION=test" >> "$GITHUB_ENV"
+              echo "DIRECTORY=kledingmakentest.thefoundationforkids.com" >> "$GITHUB_ENV"
+          else
+              echo "LOCATION=test" >> "$GITHUB_ENV"
+              echo "DIRECTORY=kledingmakentest.thefoundationforkids.com" >> "$GITHUB_ENV"
+          fi
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.4
+      - name: Install Composer Dependencies
+        run: composer install --optimize-autoloader --no-dev --no-progress --no-interaction --prefer-dist
+      - name: Tar directory
+        run:  tar -czf kledingmaken.tar.gz ./*
+      - name: Ping remote
+        run:  ssh -o ConnectTimeout=5 -p 2222 ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "exit" || true
+      - name: Ping remote 2
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          port: 2222
+          script: |
+            echo ping
+            exit
+      - name: Deploy to web server
+        uses: moonpathbg/scp_uploader@latest
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          port: 2222
+          username: ${{ secrets.SSH_USER }}
+          key : ${{ secrets.SSH_KEY }}
+          source: kledingmaken.tar.gz
+          target: /home2/qdzadgmy/tmp/${{ env.LOCATION }}.tar.gz
+
+      - name: Execute remote SSH commands
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          port: 2222
+          script: |
+            export PATH=/opt/cpanel/ea-php84/root/usr/bin:$PATH
+            cd /home2/qdzadgmy/kledingmakenstaging.thefoundationforkids.com/
+
+            rm -r -f /home2/qdzadgmy/kledingmakenstaging.thefoundationforkids.com/${{ env.LOCATION }}
+            mkdir ${{ env.LOCATION }}
+            tar -xzf ${{ env.LOCATION }}.tar.gz -C /home2/qdzadgmy/kledingmakenstaging.thefoundationforkids.com/${{ env.LOCATION }}
+
+            cp /home2/qdzadgmy/kledingmakenstaging.thefoundationforkids.com/${{ env.LOCATION }}.env /home2/qdzadgmy/kledingmakenstaging.thefoundationforkids.com/${{ env.LOCATION }}/.env
+            rsync -a --delete /home2/qdzadgmy/kledingmakenstaging.thefoundationforkids.com/${{ env.LOCATION }}/ /home2/qdzadgmy/${{ env.DIRECTORY }}/
+            cd /home2/qdzadgmy/${{ env.DIRECTORY }}/
+            php artisan migrate
+            php artisan db:seed --class=ShieldSeeder
+            php artisan config:cache
+            php artisan route:cache
+            exit
+
+
+
