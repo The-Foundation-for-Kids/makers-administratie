@@ -39,12 +39,12 @@ use AlperenErsoy\FilamentExport\Actions\FilamentExportBulkAction;
 class CollectorResource extends Resource
 {
     protected static ?string $model = Collector::class;
-    protected static string | \UnitEnum | null $navigationGroup = 'Inzamelpunt';
+    protected static string|\UnitEnum|null $navigationGroup = 'Inzamelpunt';
     protected static ?string $navigationLabel = 'Inzamelpunt';
     public static ?string $pluralModelLabel = 'Inzamelpunt';
     protected static ?string $slug = 'Inzamelpunt';
     protected static ?int $navigationSort = 15;
-    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-rectangle-stack';
 
     public static function form(\Filament\Schemas\Schema $schema): \Filament\Schemas\Schema
     {
@@ -108,6 +108,12 @@ class CollectorResource extends Resource
                     ExcelExport::make()->withColumns([
                         Column::make('Code'),
                         Column::make('Kenmerk_Instantie'),
+                        Column::make('Wens'),
+                        Column::make('Maat'),
+                        Column::make('Geslacht'),
+                        Column::make('Leeftijd'),
+                        Column::make('Kleuren'),
+                        Column::make('houdtVan'),
 
                     ])->withWriterType(Excel::XLSX)
                         ->withFilename('Instantietabel -' . date('Y-m-d'))
