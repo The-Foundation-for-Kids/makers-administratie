@@ -2,29 +2,21 @@
 
 namespace App\Filament\Resources\Clothing\Pages;
 
-use App\Models\Agency;
-
-use Filament\Pages\Actions;
-use Illuminate\Support\Str;
-use Filament\Actions\Action;
-
-
-use Filament\Actions\CreateAction;
-use Filament\Actions\ImportAction;
-use Filament\Tables\Filters\Filter;
-
-
-use Filament\Forms\Components\Hidden;
-
-use Filament\Forms\Components\Select;
-
-
-use Filament\Forms\Components\FileUpload;
-
-use Filament\Resources\Pages\ListRecords;
+use App\Filament\Admin\Resources\ClothingResource\Actions\ClothingImportAction;
+use App\Filament\Admin\Resources\ClothingResource\Actions\ClothingImportSpecialAction;
 use App\Filament\Resources\Clothing\ClothingResource;
 use App\Filament\Resources\Clothing\Widgets\StatsOverview;
-use App\Filament\Admin\Resources\ClothingResource\Actions\ClothingImportAction;
+use App\Models\Agency;
+use Filament\Actions\Action;
+use Filament\Actions\CreateAction;
+use Filament\Actions\ImportAction;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Hidden;
+use Filament\Forms\Components\Select;
+use Filament\Pages\Actions;
+use Filament\Resources\Pages\ListRecords;
+use Filament\Tables\Filters\Filter;
+use Illuminate\Support\Str;
 
 
 class ListClothing extends ListRecords
@@ -44,7 +36,8 @@ class ListClothing extends ListRecords
             CreateAction::make()->label('Aanvraag opvoeren'),
 
             ClothingImportAction::make()
-                ->color('primary')
+                ->color('primary'),
+ 
         ];
     }
     protected function getHeaderWidgets(): array
