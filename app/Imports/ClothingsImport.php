@@ -14,7 +14,6 @@ use Maatwebsite\Excel\Concerns\WithValidation;
 
 
 class ClothingsImport implements ToModel, WithHeadingRow, WithValidation, SkipsOnFailure
-
 {
     use Importable;
     use SkipsFailures;
@@ -33,7 +32,9 @@ class ClothingsImport implements ToModel, WithHeadingRow, WithValidation, SkipsO
         }
         $agency = $this->form['agency_id'];
         $year = $this->form['Jaartal'];
-
+        $maakster_id = $this->form['maakster_id'];
+        $status = $this->form['Status'];
+    
         //  map model fields to spreadsheet rows by column name
 
         $tt = new Clothing([
@@ -48,6 +49,9 @@ class ClothingsImport implements ToModel, WithHeadingRow, WithValidation, SkipsO
             'Notities' => $row['notitie'],
             'Kenmerk_Instantie' => $row['info_instantie'],
             'Kleding_Deadline' => $row['deadline'],
+            'maakster_id' => $maakster_id,
+            'Status' => $status,
+
 
         ]);
         return $tt;

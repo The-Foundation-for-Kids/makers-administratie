@@ -19,6 +19,9 @@ jobs:
           elif  [[ $BRANCH == 'test' && $GITHUB_EVENT_NAME == 'push' ]]; then
               echo "LOCATION=test" >> "$GITHUB_ENV"
               echo "DIRECTORY=kledingmakentest.thefoundationforkids.com" >> "$GITHUB_ENV"
+          elif  [[ $BRANCH == 'sendy' && $GITHUB_EVENT_NAME == 'push' ]]; then
+              echo "LOCATION=sendy" >> "$GITHUB_ENV"
+              echo "DIRECTORY=kledingmakensendy.thefoundationforkids.com" >> "$GITHUB_ENV"
           else
               echo "LOCATION=test" >> "$GITHUB_ENV"
               echo "DIRECTORY=kledingmakentest.thefoundationforkids.com" >> "$GITHUB_ENV"
