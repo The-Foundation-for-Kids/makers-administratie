@@ -50,7 +50,7 @@ class UserInvitationResource extends Resource
                     ->autocomplete(false),
 
                 CheckboxList::make('roles')
-                    ->relationship('roles', 'name', fn(Builder $query) => $query->where('name', '=', 'maakster'))
+                    ->relationship('roles', 'name', fn(Builder $query) => $query->whereIn('name', ['maakster','verzamelpunt']))
                     ->columns(2),
             ]);
     }
