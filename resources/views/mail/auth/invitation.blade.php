@@ -1,5 +1,5 @@
 <x-mail::message>
-Beste Maakster,
+Beste vrijwilliger,
 
 Klik op onstaande button om je account te activeren en een zelfgekozen wachtwoord in te stellen
 

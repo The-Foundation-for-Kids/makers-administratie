@@ -132,7 +132,7 @@ class Clothing extends Model
                     } elseif (str_contains(strtolower($this->Wens), 'december')) {
                         $this->Kleding_Deadline = now()->addDays(43);
                     } else {
-                        $this->Kleding_Deadline =  now()->addDays(29);
+                        $this->Kleding_Deadline = now()->addDays(29);
                     }
                 }
             }
@@ -176,7 +176,7 @@ class Clothing extends Model
             ->logFillable()->logOnlyDirty();
     }
 
-    public  function ExcelToPHPObject($dateValue = 0)
+    public function ExcelToPHPObject($dateValue = 0)
     {
         $dateTime = self::ExcelToPHP($dateValue);
         $days = floor($dateTime / 86400);
@@ -199,7 +199,7 @@ class Clothing extends Model
             $code = $item->agency->Code;
             $year = substr($item->year, -2);
             if ($year == "") {
-                $year  =  substr(date("Y"), -2);
+                $year = substr(date("Y"), -2);
             }
             $filter = $code . $year . "%";
             $prev = Clothing::where('code', 'like', $filter)->latest('id')->first();
@@ -211,7 +211,9 @@ class Clothing extends Model
                 $new_code = $code . strval((int) $year * 10000 + 1);
             }
             $item->code = $new_code;
-            $item->Status = 'Ingevoerd';
+            if (!$item->Status) {
+                $item->Status = 'Ingevoerd';
+            }
             $geslacht = $item->Geslacht;
 
             if (stripos($geslacht, "jong") === 0) {
