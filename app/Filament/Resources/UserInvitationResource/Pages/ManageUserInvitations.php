@@ -32,7 +32,7 @@ class ManageUserInvitations extends ManageRecords
                         Notification::make()
                             ->danger()
                             ->title('Gebruiker bestaat al')
-                            ->body('Dit email adres is al in gebruik in de administratie')
+                            ->body('Dit e-mailadres is al in gebruik in de administratie.')
                             ->persistent()
                             ->send();
 

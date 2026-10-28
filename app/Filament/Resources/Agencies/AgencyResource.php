@@ -117,14 +117,14 @@ class AgencyResource extends Resource
                 TextColumn::make('Status')->sortable()->searchable(),
                 TextColumn::make('Aanvrager')->sortable()->searchable(),
 
-                TextColumn::make('open_count')->counts('open')->sortable()->label('Totaal'),
-                TextColumn::make('ingevoerd_count')->counts('ingevoerd')->sortable()->label('Inge'),
-                TextColumn::make('aangeboden_count')->counts('aangeboden')->sortable()->label('Aang'),
-                TextColumn::make('opgepakt_count')->counts('opgepakt')->sortable()->label('Opge'),
-                TextColumn::make('klaar_count')->counts('klaar')->sortable()->label('Klaa'),
-                TextColumn::make('verzonden_count')->counts('verzonden')->sortable()->label('Verz'),
-                TextColumn::make('ontvangen_count')->counts('ontvangen')->sortable()->label('Ontv'),
-                TextColumn::make('afgehandeld_count')->counts('afgehandeld')->sortable()->label('Afg'),
+                TextColumn::make('open_count')->counts('open')->sortable()->label('Totaal')->headerTooltip('Totaal nog niet afgehandeld'),
+                TextColumn::make('ingevoerd_count')->counts('ingevoerd')->sortable()->label('Inge')->headerTooltip('Ingevoerd'),
+                TextColumn::make('aangeboden_count')->counts('aangeboden')->sortable()->label('Aang')->headerTooltip('Aangeboden'),
+                TextColumn::make('opgepakt_count')->counts('opgepakt')->sortable()->label('Opge')->headerTooltip('Opgepakt'),
+                TextColumn::make('klaar_count')->counts('klaar')->sortable()->label('Klaa')->headerTooltip('Klaar'),
+                TextColumn::make('verzonden_count')->counts('verzonden')->sortable()->label('Verz')->headerTooltip('Verzonden'),
+                TextColumn::make('ontvangen_count')->counts('ontvangen')->sortable()->label('Ontv')->headerTooltip('Ontvangen'),
+                TextColumn::make('afgehandeld_count')->counts('afgehandeld')->sortable()->label('Afg')->headerTooltip('Afgehandeld'),
 
                 //
                 //    ])->defaultSort('open_count','desc')

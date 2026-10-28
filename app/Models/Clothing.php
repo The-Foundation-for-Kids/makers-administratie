@@ -2,18 +2,15 @@
 
 namespace App\Models;
 
-use DateTime;
 use Carbon\Carbon;
 use Illuminate\Support\HtmlString;
+use Illuminate\Support\Facades\DB;
 use Spatie\Activitylog\LogOptions;
-use SebastianBergmann\Type\NullType;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Builder;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use LaravelArchivable\Archivable;
-use PhpOffice\PhpSpreadsheet\Calculation\Logical\Boolean;
 
 class Clothing extends Model
 {
@@ -113,7 +110,22 @@ class Clothing extends Model
         );
     }
 
-    public function setStatus(string $status, string $prev_status = null): bool
+    /**
+     * Standaard deadline vanaf vandaag: 6 weken (+1 dag) voor verjaardag- en
+     * decembersetjes, anders 4 weken (+1 dag).
+     */
+    public static function standaardDeadline(?string $wens): Carbon
+    {
+        $wens = strtolower($wens ?? '');
+
+        if (str_contains($wens, 'verjaardag') || str_contains($wens, 'december')) {
+            return now()->addDays(43);
+        }
+
+        return now()->addDays(29);
+    }
+
+    public function setStatus(string $status, ?string $prev_status = null): bool
     {
         if ($prev_status != null) {
             if ($prev_status != $this->Status) {
@@ -121,19 +133,12 @@ class Clothing extends Model
             }
         }
 
-        if (in_array($status, $this->validstatus(), true)) {
-            $clear = false;
+        if (in_array($status, $this->validStatus(), true)) {
             $this->Status = $status;
             if ($status == 'Opgepakt') {
                 $this->DatumMaakster = Carbon::now();
                 if (!$this->Kleding_Deadline) {
-                    if (str_contains(strtolower($this->Wens), 'verjaardag')) {
-                        $this->Kleding_Deadline = now()->addDays(43);
-                    } elseif (str_contains(strtolower($this->Wens), 'december')) {
-                        $this->Kleding_Deadline = now()->addDays(43);
-                    } else {
-                        $this->Kleding_Deadline = now()->addDays(29);
-                    }
+                    $this->Kleding_Deadline = static::standaardDeadline($this->Wens);
                 }
             }
             if (in_array($status, ['Ingevoerd', 'Aangeboden'], true)) {
@@ -146,8 +151,30 @@ class Clothing extends Model
             //$this->Activity = $this->Activity . Carbon::now(). " -> " . $this->Status . " door " . auth()->user()->name . "\n";
             return true;
         }
-        return true;
+        return false;
     }
+    /**
+     * Pak de aanvraag op voor de ingelogde maakster. De rij wordt gelockt,
+     * zodat twee maaksters niet tegelijk dezelfde aanvraag kunnen oppakken.
+     */
+    public function oppakken(): bool
+    {
+        return DB::transaction(function () {
+            $locked = static::query()->lockForUpdate()->find($this->getKey());
+
+            if (! $locked || ! $locked->isStatus('Aangeboden')) {
+                return false;
+            }
+
+            $locked->setStatus('Opgepakt');
+            $locked->maakster_id = auth()->user()->id;
+            $locked->Maakster = auth()->user()->name;
+            $locked->save();
+
+            return true;
+        });
+    }
+
     public function adres(): string
     {
 
@@ -217,10 +244,8 @@ class Clothing extends Model
             $geslacht = $item->Geslacht;
 
             if (stripos($geslacht, "jong") === 0) {
-                error_log("jongen");
                 $item->Geslacht = "Jongen";
             } elseif (stripos($geslacht, "meis") === 0) {
-                error_log("meis");
                 $item->Geslacht = "Meisje";
             }
 
