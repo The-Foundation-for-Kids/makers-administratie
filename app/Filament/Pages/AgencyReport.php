@@ -40,7 +40,7 @@ class AgencyReport extends Page implements HasTable
     protected static ?string $navigationParentItem = 'Instanties';
 
     protected static ?int $navigationSort = 20;
-    public static ?string $pluralModelLabel = 'Raport';
+    public static ?string $pluralModelLabel = 'Rapport';
     protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-clipboard-document-list';
 
 
@@ -85,7 +85,7 @@ class AgencyReport extends Page implements HasTable
                         'style' => 'max-width:260px'
                     ])
                     ->wrap(),
-                TextColumn::make('clothing_count')->label('Total')
+                TextColumn::make('clothing_count')->label('Totaal')
                     ->counts(function ($livewire) {
                         if ($livewire->tableFilters['clothing']['year']['value']) {
                             return [
@@ -160,7 +160,7 @@ class AgencyReport extends Page implements HasTable
                             $query->whereRaw('month(datummaakster) = 3')->withArchived()
                         ];
                     }
-                })->label('Mar')->sortable(),
+                })->label('Mrt')->sortable(),
                 TextColumn::make('monthapr_count')->counts(function ($livewire) {
                     if ($livewire->tableFilters['clothing']['year']['value']) {
                         return [
@@ -189,7 +189,7 @@ class AgencyReport extends Page implements HasTable
                             $query->whereRaw('month(datummaakster) = 5')->withArchived()
                         ];
                     }
-                })->label('May')->sortable(),
+                })->label('Mei')->sortable(),
                 TextColumn::make('monthjun_count')->counts(function ($livewire) {
                     if ($livewire->tableFilters['clothing']['year']['value']) {
                         return [

@@ -22,7 +22,7 @@ class Dashboard extends BasePage
     {
 
         if (! auth()->user()->hasAnyRole(Role::all())) {
-            return new HtmlString('Wil je graag kleding voor ons maken?<br><br>Neem contact op met de een van de beheerders via facebook om toegelaten te worden tot deze site.');
+            return new HtmlString('Wil je graag kleding voor ons maken?<br><br>Neem contact op met een van de beheerders via Facebook om toegelaten te worden tot deze site.');
         }
 
         return new HtmlString('Wil je graag kleding voor ons maken? Neem snel een kijkje welke aanvragen er openstaan.<br><br>

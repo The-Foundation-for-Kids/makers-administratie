@@ -229,7 +229,7 @@ class ClothingRelationManager extends RelationManager
             ])
             ->modifyQueryUsing(fn(Builder $query) => $query->where('Status', '!=', 'Afgehandeld'))
             ->toolbarActions([
-                ExportBulkAction::make()->label('Opslaan')
+                ExportBulkAction::make()->label('Exporteren')
                     ->exports([
                         ExcelExport::make()->withColumns([
                             Column::make('Code'),

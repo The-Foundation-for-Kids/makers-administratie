@@ -21,6 +21,9 @@ class AuthenticationLogResource extends Resource
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
     protected static ?string $recordTitleAttribute = 'Logging';
+    protected static ?string $navigationLabel = 'Inloglogboek';
+    protected static ?string $modelLabel = 'inlogpoging';
+    protected static ?string $pluralModelLabel = 'Inloglogboek';
 
     public static function form(Schema $schema): Schema
     {

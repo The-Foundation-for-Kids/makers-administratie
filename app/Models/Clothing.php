@@ -5,6 +5,7 @@ namespace App\Models;
 use DateTime;
 use Carbon\Carbon;
 use Illuminate\Support\HtmlString;
+use Illuminate\Support\Facades\DB;
 use Spatie\Activitylog\LogOptions;
 use SebastianBergmann\Type\NullType;
 use Illuminate\Database\Eloquent\Model;
@@ -148,6 +149,28 @@ class Clothing extends Model
         }
         return true;
     }
+    /**
+     * Pak de aanvraag op voor de ingelogde maakster. De rij wordt gelockt,
+     * zodat twee maaksters niet tegelijk dezelfde aanvraag kunnen oppakken.
+     */
+    public function oppakken(): bool
+    {
+        return DB::transaction(function () {
+            $locked = static::query()->lockForUpdate()->find($this->getKey());
+
+            if (! $locked || ! $locked->isStatus('Aangeboden')) {
+                return false;
+            }
+
+            $locked->setStatus('Opgepakt');
+            $locked->maakster_id = auth()->user()->id;
+            $locked->Maakster = auth()->user()->name;
+            $locked->save();
+
+            return true;
+        });
+    }
+
     public function adres(): string
     {
 

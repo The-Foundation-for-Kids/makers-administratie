@@ -257,7 +257,7 @@ class CreatorResource extends Resource
                     })->hidden(False)
                     ->deselectRecordsAfterCompletion(),
 
-                ExportBulkAction::make()->label('Opslaan')
+                ExportBulkAction::make()->label('Exporteren')
                     ->exports([
                         ExcelExport::make()->withColumns([
                             Column::make('Code'),
