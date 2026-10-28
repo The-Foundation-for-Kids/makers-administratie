@@ -24,7 +24,6 @@
     Dit zijn kledingaanvragen die je hebt opgepakt. In het voorbeeld hierboven zijn dat er 10.
     <img src="{{ asset('/images/openstaand.png') }}" alt="openstaand">
     <div class="mx-auto prose dark:prose-invert max-w-none">
-        <h3 class="filament-header-heading text-xl font-bold tracking-tight">Maatlabel</h3>
         Maak in elk kledingstuk van je aanvraag een maatlabel, zodat direct duidelijk is welke maat het is.<br><br>
 
         Ben je klaar met je aanvraag, kun je kiezen uit 2 mogelijkheden om je aanvraag af te ronden.
