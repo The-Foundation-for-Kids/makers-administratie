@@ -16,6 +16,7 @@ use App\Models\Agency;
 use App\Models\Collector;
 
 use Illuminate\Support\Str;
+use Illuminate\Support\Carbon;
 use Filament\Tables\Table;
 use Filament\Facades\Filament;
 use Filament\Resources\Resource;
@@ -65,6 +66,22 @@ class CollectorResource extends Resource
                 TextColumn::make('Maat')->sortable()->searchable(),
                 TextColumn::make('maakster.name')->sortable()->searchable(),
                 TextColumn::make('Kenmerk_Instantie')->sortable()->searchable(),
+                TextColumn::make('Kleding_Deadline')
+                    ->label('Deadline')
+                    ->sortable()
+                    ->date('d-m-Y')
+                    ->color(function (Collector $record) {
+                        if ($record->Kleding_Deadline) {
+                            $deadline = Carbon::parse($record->Kleding_Deadline);
+
+                            if ($deadline->lt(Carbon::now())) {
+                                return 'danger';
+                            }
+                            if ($deadline->lt(Carbon::now()->addDays(7))) {
+                                return 'primary';
+                            }
+                        }
+                    }),
 
 
             ])
@@ -114,6 +131,7 @@ class CollectorResource extends Resource
                         Column::make('Leeftijd'),
                         Column::make('Kleuren'),
                         Column::make('houdtVan'),
+                        Column::make('Kleding_Deadline')->heading('Deadline'),
 
                     ])->withWriterType(Excel::XLSX)
                         ->withFilename('Instantietabel -' . date('Y-m-d'))
