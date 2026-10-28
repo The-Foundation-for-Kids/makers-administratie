@@ -28,7 +28,7 @@ class UserInvitationMail extends Mailable
     {
 
         return new Envelope(
-            subject: 'Uitnodiging account activatie vor The Foundation for Kids',
+            subject: 'Welkom als maakster bij The Foundation for Kids',
         );
     }
 
