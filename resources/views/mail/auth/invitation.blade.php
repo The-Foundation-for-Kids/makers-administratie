@@ -1,7 +1,7 @@
 <x-mail::message>
 # Welkom als maakster bij The Foundation for Kids!
 
-Wat fijn dat je ervoor hebt gekozen om jouw creativiteit in te zetten voor een kind dat dit hard kan gebruiken. Vanaf nu maak jij deel uit van een groep enthousiaste vrijwilligers die samen iets bijzonders willen betekenen.
+Wat fijn dat je jouw creativiteit wilt inzetten om een kind blij te maken met iets wat speciaal voor hem of haar gemaakt is. Vanaf nu maak jij deel uit van een groep enthousiaste vrijwilligers die samen iets bijzonders willen betekenen.
 
 Hierbij ontvang je de uitnodiging voor ons online aanvragensysteem, met de button kun je jouw account activeren en een zelfgekozen wachtwoord instellen.
 
