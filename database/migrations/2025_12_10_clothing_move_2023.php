@@ -14,17 +14,21 @@ return new class extends Migration {
 
     public function up()
     {
+        if (! Schema::hasTable('clothing_2023')) {
+            return;
+        }
+        if (! Schema::hasTable('clothing_2024')) {
+            return;
+        }
 
         $sourceQuery = DB::table('clothing_2023')
-            ->select('Activity', 'agency_id', 'Code', 'created_at', 'Datum_Verlopen_Voortoekenning', 'DatumMaakster', 'deleted_at', 'Gebruiker_Ingevoerd', 'Gebruiker_Voortoekenning', 'Geslacht', 'houdtVan', 'id', 'Kenmerk_Geprint', 'Kenmerk_Instantie', 'Kleding_Deadline', 'Kleuren', 'Leeftijd', 'Maakster', 'maakster_id', 'Maat', 'Notities', 'Question_Filled', 'Status', 'TrackAndTraceCode', 'updated_at', 'Wens');
+            ->select('Activity', 'agency_id', 'Code', 'created_at', 'Datum_Verlopen_Voortoekenning', 'DatumMaakster', 'deleted_at', 'Gebruiker_Ingevoerd', 'Gebruiker_Voortoekenning', 'Geslacht', 'id', 'Kenmerk_Geprint', 'Kenmerk_Instantie', 'Kleding_Deadline', 'Kleuren', 'Leeftijd', 'Maakster', 'maakster_id', 'Maat', 'Notities', 'Question_Filled', 'Status', 'TrackAndTraceCode', 'updated_at', 'Wens');
 
         // Execute the bulk insert
         DB::table('clothing')->insertUsing(
-            ['Activity', 'agency_id', 'Code', 'created_at', 'Datum_Verlopen_Voortoekenning', 'DatumMaakster', 'deleted_at', 'Gebruiker_Ingevoerd', 'Gebruiker_Voortoekenning', 'Geslacht', 'houdtVan', 'id', 'Kenmerk_Geprint', 'Kenmerk_Instantie', 'Kleding_Deadline', 'Kleuren', 'Leeftijd', 'Maakster', 'maakster_id', 'Maat', 'Notities', 'Question_Filled', 'Status', 'TrackAndTraceCode', 'updated_at', 'Wens'],
+            ['Activity', 'agency_id', 'Code', 'created_at', 'Datum_Verlopen_Voortoekenning', 'DatumMaakster', 'deleted_at', 'Gebruiker_Ingevoerd', 'Gebruiker_Voortoekenning', 'Geslacht', 'id', 'Kenmerk_Geprint', 'Kenmerk_Instantie', 'Kleding_Deadline', 'Kleuren', 'Leeftijd', 'Maakster', 'maakster_id', 'Maat', 'Notities', 'Question_Filled', 'Status', 'TrackAndTraceCode', 'updated_at', 'Wens'],
             $sourceQuery
         );
-
-
     }
 
     /**

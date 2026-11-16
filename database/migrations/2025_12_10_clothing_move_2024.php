@@ -14,6 +14,12 @@ return new class extends Migration {
 
     public function up()
     {
+        if (! Schema::hasTable('clothing_2023')) {
+            return;
+        }
+        if (! Schema::hasTable('clothing_2024')) {
+            return;
+        }
 
         $sourceQuery = DB::table('clothing_2024')
             ->select('Activity', 'agency_id', 'Code', 'created_at', 'Datum_Verlopen_Voortoekenning', 'DatumMaakster', 'deleted_at', 'Gebruiker_Ingevoerd', 'Gebruiker_Voortoekenning', 'Geslacht', 'houdtVan', 'id', 'Kenmerk_Geprint', 'Kenmerk_Instantie', 'Kleding_Deadline', 'Kleuren', 'Leeftijd', 'Maakster', 'maakster_id', 'Maat', 'Notities', 'Question_Filled', 'Status', 'TrackAndTraceCode', 'updated_at', 'Wens');
@@ -23,8 +29,6 @@ return new class extends Migration {
             ['Activity', 'agency_id', 'Code', 'created_at', 'Datum_Verlopen_Voortoekenning', 'DatumMaakster', 'deleted_at', 'Gebruiker_Ingevoerd', 'Gebruiker_Voortoekenning', 'Geslacht', 'houdtVan', 'id', 'Kenmerk_Geprint', 'Kenmerk_Instantie', 'Kleding_Deadline', 'Kleuren', 'Leeftijd', 'Maakster', 'maakster_id', 'Maat', 'Notities', 'Question_Filled', 'Status', 'TrackAndTraceCode', 'updated_at', 'Wens'],
             $sourceQuery
         );
-
-
     }
 
     /**

@@ -1,0 +1,80 @@
+name: Run PHPUnit Tests
+
+on:
+  push:
+    branches:
+      - wordpress-integratie
+      - main
+  pull_request:
+    branches:
+      - wordpress-integratie
+      - main
+
+jobs:
+  test:
+    name: PHPUnit Tests
+    runs-on: ubuntu-latest
+    
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: secret
+          MYSQL_DATABASE: makersadmini_test
+          MYSQL_USER: runner
+          MYSQL_PASSWORD: secret
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          coverage: none
+          tools: composer
+
+      - name: Copy .env for testing
+        run: cp .env.example .env.testing
+
+      - name: Configure testing environment
+        run: |
+          echo "APP_ENV=testing" >> .env.testing
+          echo "APP_KEY=base64:dummysaltkeyforgithubactions" >> .env.testing
+          echo "DB_CONNECTION=mysql" >> .env.testing
+          echo "DB_HOST=127.0.0.1" >> .env.testing
+          echo "DB_PORT=3306" >> .env.testing
+          echo "DB_DATABASE=makersadmini_test" >> .env.testing
+          echo "DB_USERNAME=runner" >> .env.testing
+          echo "DB_PASSWORD=secret" >> .env.testing
+
+      - name: Install Composer dependencies
+        run: |
+          composer install --no-progress --no-interaction
+          export COMPOSER_ALLOW_SUPERUSER=1
+
+      - name: Wait for MySQL
+        run: |
+          while ! mysql -h 127.0.0.1 -P 3306 -uroot -psecret -e "SELECT 1"; do
+            sleep 5
+          done
+
+      - name: Create database
+        run: mysql -h 127.0.0.1 -P 3306 -uroot -psecret -e "CREATE DATABASE IF NOT EXISTS makersadmini_test; GRANT ALL PRIVILEGES ON makersadmini_test.* TO 'runner'@'%' IDENTIFIED BY 'secret'; FLUSH PRIVILEGES;"
+
+      - name: Run migrations
+        run: php artisan migrate --force
+
+      - name: Run tests
+        run: composer run test
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: storage/logs/laravel.log
