@@ -1,4 +1,4 @@
-name: Run PHPUnit Tests
+name: Test Suite
 
 on:
   push:
@@ -72,11 +72,14 @@ jobs:
         run: php artisan migrate --force
 
       - name: Run tests
-        run: composer run test
+        run: composer run test -- --log-junit tests-results.xml
 
       - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: test-results
-          path: storage/logs/laravel.log
+          path: |
+            tests-results.xml
+            storage/logs/laravel.log
+          if-no-files-found: ignore
