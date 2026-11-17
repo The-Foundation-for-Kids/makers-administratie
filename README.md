@@ -1,4 +1,4 @@
-https://github.com/The-Foundation-for-Kids/makers-administratie/actions/workflows/tests.yml/badge.svg
+[![Run PHPUnit Tests](https://github.com/The-Foundation-for-Kids/makers-administratie/actions/workflows/tests.yml/badge.svg?branch=wordpress-integratie)](https://github.com/The-Foundation-for-Kids/makers-administratie/actions/workflows/tests.yml)
 
 ## Kledingmaken administratie
 
