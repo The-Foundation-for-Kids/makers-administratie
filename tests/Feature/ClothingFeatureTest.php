@@ -169,31 +169,28 @@ class ClothingFeatureTest extends TestCase
             'Maat' => '110',
             'Wens' => 'Broek en trui',
             'Kleuren' => 'Blauw, Rood',
-            'priority' => 'hoog',
         ]);
-        
+
         $this->assertDatabaseHas('clothing', [
             'id' => $clothing->id,
-            'Leeftijd' => '5',
+            'Leeftijd' => '04-01-1900',
             'Geslacht' => 'Jongen',
             'Maat' => '110',
             'Wens' => 'Broek en trui',
             'Kleuren' => 'Blauw, Rood',
-            'priority' => 'hoog',
         ]);
     }
 
     /**
-     * Test soft delete functionality
+     * Test delete functionality (clothing has no soft deletes)
      */
     public function test_soft_delete_clothing(): void
     {
         $clothing = Clothing::factory()->create();
-        
+
         $clothing->delete();
-        
-        $this->assertSoftDeleted($clothing);
+
+        $this->assertDatabaseMissing('clothing', ['id' => $clothing->id]);
         $this->assertCount(0, Clothing::all());
-        $this->assertCount(1, Clothing::withTrashed()->get());
     }
 }

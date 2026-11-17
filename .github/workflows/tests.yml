@@ -14,7 +14,19 @@ jobs:
   test:
     name: PHPUnit Tests
     runs-on: ubuntu-latest
-    
+
+    # Deze env-variabelen winnen van de <env> waarden in phpunit.xml.dist
+    # (PHPUnit overschrijft bestaande variabelen niet zonder force="true").
+    env:
+      APP_ENV: testing
+      COMPOSER_ALLOW_SUPERUSER: 1
+      DB_CONNECTION: mysql
+      DB_HOST: 127.0.0.1
+      DB_PORT: "3306"
+      DB_DATABASE: makersadmini_test
+      DB_USERNAME: runner
+      DB_PASSWORD: secret
+
     services:
       mysql:
         image: mysql:8.0
@@ -25,7 +37,7 @@ jobs:
           MYSQL_PASSWORD: secret
         ports:
           - 3306:3306
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=10
 
     steps:
       - name: Checkout code
@@ -35,36 +47,26 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.4'
+          extensions: pdo_mysql
           coverage: none
           tools: composer
 
-      - name: Copy .env for testing
-        run: cp .env.example .env.testing
-
-      - name: Configure testing environment
-        run: |
-          echo "APP_ENV=testing" >> .env.testing
-          echo "APP_KEY=base64:dummysaltkeyforgithubactions" >> .env.testing
-          echo "DB_CONNECTION=mysql" >> .env.testing
-          echo "DB_HOST=127.0.0.1" >> .env.testing
-          echo "DB_PORT=3306" >> .env.testing
-          echo "DB_DATABASE=makersadmini_test" >> .env.testing
-          echo "DB_USERNAME=runner" >> .env.testing
-          echo "DB_PASSWORD=secret" >> .env.testing
-
       - name: Install Composer dependencies
-        run: |
-          composer install --no-progress --no-interaction
-          export COMPOSER_ALLOW_SUPERUSER=1
+        run: composer install --no-progress --no-interaction
 
-      - name: Wait for MySQL
+      - name: Generate app key
+        run: echo "APP_KEY=$(php artisan key:generate --show)" >> "$GITHUB_ENV"
+
+      - name: Wait for MySQL and create test database
         run: |
-          while ! mysql -h 127.0.0.1 -P 3306 -uroot -psecret -e "SELECT 1"; do
-            sleep 5
+          printf '[client]\nuser=root\npassword=secret\nhost=127.0.0.1\nport=3306\nprotocol=tcp\n' > "$RUNNER_TEMP/my.cnf"
+          chmod 600 "$RUNNER_TEMP/my.cnf"
+          for i in $(seq 1 30); do
+            mysql --defaults-extra-file="$RUNNER_TEMP/my.cnf" -e "SELECT 1" && break
+            sleep 2
           done
-
-      - name: Create database
-        run: mysql -h 127.0.0.1 -P 3306 -uroot -psecret -e "CREATE DATABASE IF NOT EXISTS makersadmini_test; GRANT ALL PRIVILEGES ON makersadmini_test.* TO 'runner'@'%' IDENTIFIED BY 'secret'; FLUSH PRIVILEGES;"
+          # MySQL 8: IDENTIFIED BY is niet toegestaan in GRANT; user apart aanmaken/wijzigen.
+          mysql --defaults-extra-file="$RUNNER_TEMP/my.cnf" -e "CREATE DATABASE IF NOT EXISTS makersadmini_test CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci; CREATE USER IF NOT EXISTS 'runner'@'%' IDENTIFIED BY 'secret'; ALTER USER 'runner'@'%' IDENTIFIED BY 'secret'; GRANT ALL PRIVILEGES ON makersadmini_test.* TO 'runner'@'%'; FLUSH PRIVILEGES;"
 
       - name: Run migrations
         run: php artisan migrate --force

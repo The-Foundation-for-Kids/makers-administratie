@@ -237,7 +237,7 @@ class Clothing extends Model
             } else {
                 $new_code = $code . strval((int) $year * 10000 + 1);
             }
-            $item->code = $new_code;
+            $item->Code = $new_code;
             if (!$item->Status) {
                 $item->Status = 'Ingevoerd';
             }
@@ -256,13 +256,13 @@ class Clothing extends Model
                 $item->Leeftijd = gmdate("d-m-Y", $UNIX_DATE);
             }
             //$item->Datum_Ingevoerd = Carbon::now();
-            $item->Gebruiker_Ingevoerd = auth()->user()->id;
-            $item->Activity = $item->Activity . Carbon::now() . " -> " . $item->Status . " door " . auth()->user()->name . "\n";
+            $item->Gebruiker_Ingevoerd = auth()->user()?->id;
+            $item->Activity = $item->Activity . Carbon::now() . " -> " . $item->Status . " door " . (auth()->user()?->name ?? 'onbekend') . "\n";
         });
 
         self::updating(function ($item) {
             if ($item->isDirty('Status')) {
-                $item->Activity = $item->Activity . Carbon::now() . " -> " . $item->Status . " door " . auth()->user()->name . "\n";
+                $item->Activity = $item->Activity . Carbon::now() . " -> " . $item->Status . " door " . (auth()->user()?->name ?? 'onbekend') . "\n";
             }
         });
     }

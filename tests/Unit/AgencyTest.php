@@ -56,7 +56,7 @@ class AgencyTest extends TestCase
         ]);
         
         $this->assertCount(1, $agency->fresh()->clothing);
-        $this->assertEquals($clothing->id, $agency->clothing->first()->id);
+        $this->assertEquals($clothing->id, $agency->fresh()->clothing->first()->id);
     }
 
     /**
