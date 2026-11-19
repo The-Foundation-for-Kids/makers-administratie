@@ -9,6 +9,7 @@ use Filament\Resources\Pages\ListRecords;
 use Konnco\FilamentImport\Actions\ImportAction;
 use Konnco\FilamentImport\Actions\ImportField;
 use Filament\Forms\Components\TextInput;
+use pxlrbt\FilamentExcel\Actions\ExportAction;
 
 class ListAgencies extends ListRecords
 {
@@ -19,6 +20,9 @@ class ListAgencies extends ListRecords
     {
         return [
             CreateAction::make()->label('Instantie opvoeren'),
+            ExportAction::make()
+                ->label('Exporteren')
+                ->exports([AgencyResource::excelExport()]),
             /*            ImportAction::make()
             ->fields([
                 TextInput::make('Status'),
