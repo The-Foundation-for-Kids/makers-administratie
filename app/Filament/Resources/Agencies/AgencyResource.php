@@ -19,7 +19,10 @@ use Filament\Schemas\Components\Section;
 use Filament\Forms\Components\DatePicker;
 use Filament\Schemas\Components\Tabs\Tab;
 use Illuminate\Database\Eloquent\Builder;
+use Maatwebsite\Excel\Excel;
+use pxlrbt\FilamentExcel\Columns\Column;
 use pxlrbt\FilamentExcel\Exports\ExcelExport;
+use pxlrbt\FilamentExcel\Actions\ExportBulkAction;
 use App\Filament\Resources\AgencyResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use  Illuminate\Database\Eloquent\Relations\HasMany;
@@ -131,7 +134,41 @@ class AgencyResource extends Resource
             ])->defaultSort('open_count', 'desc')
             ->filters([])
             ->recordActions([])
-            ->toolbarActions([]);
+            ->toolbarActions([
+                ExportBulkAction::make()
+                    ->label('Exporteren')
+                    ->exports([static::excelExport()]),
+            ]);
+    }
+
+    public static function excelExport(): ExcelExport
+    {
+        return ExcelExport::make()
+            ->modifyQueryUsing(fn (Builder $query) => $query->with('verzamel_user'))
+            ->withColumns([
+                Column::make('Code'),
+                Column::make('Status'),
+                Column::make('Aanvrager'),
+                Column::make('Naam_Contactpersoon')->heading('Contactpersoon'),
+                Column::make('Emailadres_Contactpersoon')->heading('Email contactpersoon'),
+                Column::make('Adres'),
+                Column::make('Postcode'),
+                Column::make('Vestigingsplaats')->heading('Plaats'),
+                Column::make('Bezorg_Naam')->heading('Bezorg naam'),
+                Column::make('Bezorg_Email')->heading('Bezorg email'),
+                Column::make('Bezorg_Adres')->heading('Bezorg adres'),
+                Column::make('Bezorg_Postcode')->heading('Bezorg postcode'),
+                Column::make('Bezorg_Plaats')->heading('Bezorg plaats'),
+                Column::make('Overige_Mail')->heading('Overige mail'),
+                Column::make('KVK-nummer'),
+                Column::make('Partner_2022')->heading('Partner 2022'),
+                Column::make('Extra_info')->heading('Extra info'),
+                Column::make('Bezoek'),
+                Column::make('verzamel_user.name')->heading('Inzamelpunt'),
+                Column::make('verzamel_user.email')->heading('Email inzamelpunt'),
+            ])
+            ->withWriterType(Excel::XLSX)
+            ->withFilename('Instanties - ' . date('Y-m-d'));
     }
 
     public static function getRelations(): array
