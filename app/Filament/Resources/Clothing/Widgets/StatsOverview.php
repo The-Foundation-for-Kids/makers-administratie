@@ -11,15 +11,14 @@ class StatsOverview extends BaseWidget
 {
     protected function getCards(): array
     {
-        $posts = Clothing::query();
-        $test = $posts->where('Status', '=', 'Opgepakt')->where('Kleding_Deadline', '<=', Carbon::now())->toSql();
-        //dd($test);
         return [
-
-
-            Stat::make('Openstaande aanvragen', Clothing::all()->where('Status', '=', 'Aangeboden')->count()),
-            Stat::make('Naderende deadline',  Clothing::all()->where('Status', '=', 'Opgepakt')->where('Kleding_Deadline', '<', Carbon::now()->addDay(7))->count()),
-
+            Stat::make('Openstaande aanvragen', Clothing::where('Status', 'Aangeboden')->count()),
+            Stat::make('Naderende deadline', Clothing::where('Status', 'Opgepakt')
+                ->whereBetween('Kleding_Deadline', [Carbon::now(), Carbon::now()->addDays(7)])
+                ->count()),
+            Stat::make('Deadline verlopen', Clothing::where('Status', 'Opgepakt')
+                ->where('Kleding_Deadline', '<', Carbon::now())
+                ->count()),
         ];
     }
 }

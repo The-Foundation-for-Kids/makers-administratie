@@ -7,26 +7,26 @@
     </div>
     <hr />
     <div class="prose  max-w-none">
-        <h1 class="filament-header-heading text-2xl font-bold trafcking-tight">Beschikbaar</h1>
+        <h1 class="filament-header-heading text-2xl font-bold tracking-tight">Beschikbaar</h1>
         <span>Dit zijn kledingverzoeken waarop je kunt inschrijven. Rechts van beschikbaar staat een getal. Dit zijn de aanvragen die nog openstaan. In het voorbeeld hierboven zijn dat er dus 45.</span>
         <img src="{{ asset('/images/aangeboden.png') }}" alt="aangeboden">
 
         <span>Bij de beschikbare kleding kan je rechts bovenin een zoekopdracht typen (in het voorbeeld hierboven jongen 116).<br><br>
             Door op het oranje trechter icoontje naast de zoekbalk te klikken, kan je filteren op instantie. Zo kan je bijvoorbeeld makkelijk alle BS aanvragen zien, of kiezen voor een aanvraag van dezelfde instantie waarvoor je al een aanvraag opgepakt of gemaakt hebt.<br><br>
-            Door op de knop Oppakken te klikken, komt deze aanvraag direct op jouw naam te staan. Deze aanvraag gaat nu automatisch uit de lijst aangeboden naar jouw lijst onder 'openstaand'.
+            Door op de knop Oppakken te klikken, komt deze aanvraag direct op jouw naam te staan. Deze aanvraag gaat nu automatisch uit de lijst 'Beschikbaar' naar jouw lijst onder 'Mijn aanvragen'.
             Er komt dan een melding in het scherm dat de aanvraag toegewezen is.
         </span>
 
     </div>
     <hr />
-    <h2 class="filament-header-heading text-2xl font-bold trafcking-tight">Mijn aanvragen</h2>
+    <h2 class="filament-header-heading text-2xl font-bold tracking-tight">Mijn aanvragen</h2>
 
     Dit zijn kledingaanvragen die je hebt opgepakt. In het voorbeeld hierboven zijn dat er 10.
     <img src="{{ asset('/images/openstaand.png') }}" alt="openstaand">
     <div class="mx-auto prose dark:prose-invert max-w-none">
         Maak in elk kledingstuk van je aanvraag een maatlabel, zodat direct duidelijk is welke maat het is.<br><br>
 
-        Ben je klaar met je aanvraag, kun je kiezen uit 2 mogelijkheden om je aanvraag af te ronden.
+        Ben je klaar met je aanvraag, dan kun je kiezen uit 2 mogelijkheden om je aanvraag af te ronden.
 
 
         <ul class="list-disc">
@@ -42,7 +42,7 @@
 
         <img src="{{ asset('/images/opties_afmelden.png') }}" alt="afmelden">
 
-        <h2 class="filament-header-heading text-2xl font-bold trafcking-tight">Openstaand</h2>
+        <h2 class="filament-header-heading text-2xl font-bold tracking-tight">Details van een aanvraag</h2>
         Als je op de regel van de aanvraag klikt, zie je verdere informatie.<br>
         Zoals het adres waar de kleding naar toegestuurd moet worden.<br>
 

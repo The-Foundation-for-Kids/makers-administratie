@@ -19,7 +19,10 @@ use Filament\Schemas\Components\Section;
 use Filament\Forms\Components\DatePicker;
 use Filament\Schemas\Components\Tabs\Tab;
 use Illuminate\Database\Eloquent\Builder;
+use Maatwebsite\Excel\Excel;
+use pxlrbt\FilamentExcel\Columns\Column;
 use pxlrbt\FilamentExcel\Exports\ExcelExport;
+use pxlrbt\FilamentExcel\Actions\ExportBulkAction;
 use App\Filament\Resources\AgencyResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use  Illuminate\Database\Eloquent\Relations\HasMany;
@@ -117,21 +120,55 @@ class AgencyResource extends Resource
                 TextColumn::make('Status')->sortable()->searchable(),
                 TextColumn::make('Aanvrager')->sortable()->searchable(),
 
-                TextColumn::make('open_count')->counts('open')->sortable()->label('Totaal'),
-                TextColumn::make('ingevoerd_count')->counts('ingevoerd')->sortable()->label('Inge'),
-                TextColumn::make('aangeboden_count')->counts('aangeboden')->sortable()->label('Aang'),
-                TextColumn::make('opgepakt_count')->counts('opgepakt')->sortable()->label('Opge'),
-                TextColumn::make('klaar_count')->counts('klaar')->sortable()->label('Klaa'),
-                TextColumn::make('verzonden_count')->counts('verzonden')->sortable()->label('Verz'),
-                TextColumn::make('ontvangen_count')->counts('ontvangen')->sortable()->label('Ontv'),
-                TextColumn::make('afgehandeld_count')->counts('afgehandeld')->sortable()->label('Afg'),
+                TextColumn::make('open_count')->counts('open')->sortable()->label('Totaal')->headerTooltip('Totaal nog niet afgehandeld'),
+                TextColumn::make('ingevoerd_count')->counts('ingevoerd')->sortable()->label('Inge')->headerTooltip('Ingevoerd'),
+                TextColumn::make('aangeboden_count')->counts('aangeboden')->sortable()->label('Aang')->headerTooltip('Aangeboden'),
+                TextColumn::make('opgepakt_count')->counts('opgepakt')->sortable()->label('Opge')->headerTooltip('Opgepakt'),
+                TextColumn::make('klaar_count')->counts('klaar')->sortable()->label('Klaa')->headerTooltip('Klaar'),
+                TextColumn::make('verzonden_count')->counts('verzonden')->sortable()->label('Verz')->headerTooltip('Verzonden'),
+                TextColumn::make('ontvangen_count')->counts('ontvangen')->sortable()->label('Ontv')->headerTooltip('Ontvangen'),
+                TextColumn::make('afgehandeld_count')->counts('afgehandeld')->sortable()->label('Afg')->headerTooltip('Afgehandeld'),
 
                 //
                 //    ])->defaultSort('open_count','desc')
             ])->defaultSort('open_count', 'desc')
             ->filters([])
             ->recordActions([])
-            ->toolbarActions([]);
+            ->toolbarActions([
+                ExportBulkAction::make()
+                    ->label('Exporteren')
+                    ->exports([static::excelExport()]),
+            ]);
+    }
+
+    public static function excelExport(): ExcelExport
+    {
+        return ExcelExport::make()
+            ->modifyQueryUsing(fn (Builder $query) => $query->with('verzamel_user'))
+            ->withColumns([
+                Column::make('Code'),
+                Column::make('Status'),
+                Column::make('Aanvrager'),
+                Column::make('Naam_Contactpersoon')->heading('Contactpersoon'),
+                Column::make('Emailadres_Contactpersoon')->heading('Email contactpersoon'),
+                Column::make('Adres'),
+                Column::make('Postcode'),
+                Column::make('Vestigingsplaats')->heading('Plaats'),
+                Column::make('Bezorg_Naam')->heading('Bezorg naam'),
+                Column::make('Bezorg_Email')->heading('Bezorg email'),
+                Column::make('Bezorg_Adres')->heading('Bezorg adres'),
+                Column::make('Bezorg_Postcode')->heading('Bezorg postcode'),
+                Column::make('Bezorg_Plaats')->heading('Bezorg plaats'),
+                Column::make('Overige_Mail')->heading('Overige mail'),
+                Column::make('KVK-nummer'),
+                Column::make('Partner_2022')->heading('Partner 2022'),
+                Column::make('Extra_info')->heading('Extra info'),
+                Column::make('Bezoek'),
+                Column::make('verzamel_user.name')->heading('Inzamelpunt'),
+                Column::make('verzamel_user.email')->heading('Email inzamelpunt'),
+            ])
+            ->withWriterType(Excel::XLSX)
+            ->withFilename('Instanties - ' . date('Y-m-d'));
     }
 
     public static function getRelations(): array

@@ -156,13 +156,7 @@ class ClothingRelationManager extends RelationManager
 
                                             $set('DatumMaakster', now());
                                             $set('Status', 'Opgepakt');
-                                            if (str_contains(strtolower($get('Wens')), 'verjaardag')) {
-                                                $set('Kleding_Deadline', now()->addDays(43));
-                                            } elseif (str_contains(strtolower($get('Wens')), 'december')) {
-                                                $set('Kleding_Deadline', now()->addDays(43));
-                                            } else {
-                                                $set('Kleding_Deadline', now()->addDays(29));
-                                            }
+                                            $set('Kleding_Deadline', \App\Models\Clothing::standaardDeadline($get('Wens')));
                                         }
                                     })
                                     ->reactive(),
@@ -229,7 +223,7 @@ class ClothingRelationManager extends RelationManager
             ])
             ->modifyQueryUsing(fn(Builder $query) => $query->where('Status', '!=', 'Afgehandeld'))
             ->toolbarActions([
-                ExportBulkAction::make()->label('Opslaan')
+                ExportBulkAction::make()->label('Exporteren')
                     ->exports([
                         ExcelExport::make()->withColumns([
                             Column::make('Code'),

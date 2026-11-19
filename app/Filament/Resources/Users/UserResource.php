@@ -44,8 +44,8 @@ class UserResource extends Resource
 
     protected static string | \UnitEnum | null $navigationGroup = 'Beheerders';
 
-    protected static ?string $navigationLabel = 'User';
-    public static ?string $pluralModelLabel = 'User';
+    protected static ?string $navigationLabel = 'Gebruikers';
+    public static ?string $pluralModelLabel = 'Gebruikers';
     protected static ?string $slug = 'user';
     //protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-users';
     //    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-currency-euro';
@@ -121,7 +121,7 @@ class UserResource extends Resource
 
                 TextColumn::make('clothing_count')->counts('clothing')->sortable()->label('Opgepakt')->toggleable(),
                 TextColumn::make('last_login_at')
-                    ->label('Loggedin')
+                    ->label('Laatst ingelogd')
                     ->date('d-m-Y')
                     ->sortable()
                     ->searchable()
@@ -133,7 +133,7 @@ class UserResource extends Resource
                     ->searchable()
                     ->toggleable(),
                 TextColumn::make('updated_at')
-                    ->label('Update')
+                    ->label('Gewijzigd')
                     ->date('d-m-Y')
                     ->sortable()
                     ->searchable()

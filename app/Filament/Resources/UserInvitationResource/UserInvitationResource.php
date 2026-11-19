@@ -80,7 +80,7 @@ class UserInvitationResource extends Resource
                         Notification::make()
                             ->success()
                             ->title('Uitnodiging verzonden')
-                            ->body('De gebruiker heeft een uitnodiging gehad.')
+                            ->body('De uitnodiging is opnieuw verzonden.')
                             ->send();
                     }),
                 DeleteAction::make(),

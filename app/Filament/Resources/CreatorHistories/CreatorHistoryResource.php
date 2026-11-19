@@ -142,7 +142,7 @@ class CreatorHistoryResource extends Resource
             ->recordActions([])
             ->toolbarActions([
 
-                ExportBulkAction::make()->label('Opslaan')
+                ExportBulkAction::make()->label('Exporteren')
                     ->exports([
                         ExcelExport::make()->withColumns([
                             Column::make('Code'),

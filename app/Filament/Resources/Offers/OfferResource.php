@@ -205,17 +205,18 @@ class OfferResource extends Resource
             ->recordActions([
                 Action::make('Oppakken')->button()
                     ->action(function ($livewire, $record) {
-                        if ($record->isStatus('Aangeboden')) {
-                            $record->setStatus('Opgepakt');
-                            $record->maakster_id = auth()->user()->id;
-                            $record->Maakster = auth()->user()->name;
-                            $record->save();
+                        if ($record->oppakken()) {
                             Notification::make()
                                 ->title('Aanvraag ' .  $record->Code . ' is toegewezen aan jou')
                                 ->success()
                                 ->send();
-                            $livewire->dispatch('refreshForm');
+                        } else {
+                            Notification::make()
+                                ->title('Aanvraag ' .  $record->Code . ' is net door iemand anders opgepakt')
+                                ->warning()
+                                ->send();
                         }
+                        $livewire->dispatch('refreshForm');
                     })
 
 
@@ -226,21 +227,29 @@ class OfferResource extends Resource
                     ->action(function (Collection $records) {
 
                         $toegewezen = array();
+                        $nietGelukt = array();
                         foreach ($records as $record) {
-                            if ($record->isStatus('Aangeboden')) {
-
-                                $record->setStatus('Opgepakt');
-                                $record->maakster_id = auth()->user()->id;
-                                $record->Maakster = auth()->user()->name;
-                                $record->save();
-
+                            if ($record->oppakken()) {
                                 array_push($toegewezen, $record->Code);
+                            } else {
+                                array_push($nietGelukt, $record->Code);
                             }
                         }
-                        Notification::make()
-                            ->title('De volgende ' . count($toegewezen) . ' aanvragen zijn aan jou toegewezen: ' .  implode(',', $toegewezen))
-                            ->success()
-                            ->send();
+
+                        if (count($toegewezen) > 0) {
+                            Notification::make()
+                                ->title(count($toegewezen) == 1
+                                    ? 'Aanvraag ' . $toegewezen[0] . ' is toegewezen aan jou'
+                                    : 'De volgende ' . count($toegewezen) . ' aanvragen zijn aan jou toegewezen: ' . implode(', ', $toegewezen))
+                                ->success()
+                                ->send();
+                        }
+                        if (count($nietGelukt) > 0) {
+                            Notification::make()
+                                ->title('Deze aanvragen zijn net door iemand anders opgepakt: ' . implode(', ', $nietGelukt))
+                                ->warning()
+                                ->send();
+                        }
                     })
                     ->deselectRecordsAfterCompletion(),
             ])

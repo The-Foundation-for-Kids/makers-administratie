@@ -23,20 +23,20 @@ class AuthenticationLogsTable
         return $table
             ->columns([
                 TextColumn::make('ip_address')
-                    ->label('IP Address')
+                    ->label('IP-adres')
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('device_name')
-                    ->label('Browser/Device')
+                    ->label('Browser/apparaat')
                     ->searchable()
-                    ->default('Unknown Device'),
+                    ->default('Onbekend apparaat'),
                 TextColumn::make('user_agent')
                     ->label('User Agent')
                     ->searchable()
                     ->wrap()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('location')
-                    ->label('Location')
+                    ->label('Locatie')
                     ->searchable(query: function (Builder $query, string $search): Builder {
                         return $query
                             ->where('location->city', 'like', "%{$search}%")
@@ -48,11 +48,11 @@ class AuthenticationLogsTable
                         if (!$state || ($state['default'] ?? false)) {
                             return '-';
                         }
-                        return ($state['city'] ?? 'Unknown City') . ', ' . ($state['state'] ?? 'Unknown State');
+                        return ($state['city'] ?? 'Onbekende plaats') . ', ' . ($state['state'] ?? 'Onbekende provincie');
                     }),
                 TextColumn::make('device_name')
-                    ->label('Device')
-                    ->default('Unknown')
+                    ->label('Apparaat')
+                    ->default('Onbekend')
                     ->searchable(),
                 IconColumn::make('login_successful')
                     ->label('Status')
@@ -63,11 +63,11 @@ class AuthenticationLogsTable
                     ->falseColor('danger')
                     ->sortable(),
                 IconColumn::make('is_trusted')
-                    ->label('Trusted')
+                    ->label('Vertrouwd')
                     ->boolean()
                     ->sortable(),
                 IconColumn::make('is_suspicious')
-                    ->label('Suspicious')
+                    ->label('Verdacht')
                     ->boolean()
                     ->trueIcon('heroicon-o-exclamation-triangle')
                     ->trueColor('warning')
@@ -91,22 +91,22 @@ class AuthenticationLogsTable
             ])
             ->filters([
                 TernaryFilter::make('login_successful')
-                    ->label('Login Status')
-                    ->placeholder('All logins')
-                    ->trueLabel('Successful only')
-                    ->falseLabel('Failed only'),
+                    ->label('Inlogstatus')
+                    ->placeholder('Alle inlogpogingen')
+                    ->trueLabel('Alleen geslaagd')
+                    ->falseLabel('Alleen mislukt'),
                 TernaryFilter::make('is_trusted')
-                    ->label('Trusted Device')
-                    ->placeholder('All devices')
-                    ->trueLabel('Trusted only')
-                    ->falseLabel('Untrusted only'),
+                    ->label('Vertrouwd apparaat')
+                    ->placeholder('Alle apparaten')
+                    ->trueLabel('Alleen vertrouwd')
+                    ->falseLabel('Alleen niet vertrouwd'),
                 TernaryFilter::make('is_suspicious')
-                    ->label('Suspicious Activity')
-                    ->placeholder('All activities')
-                    ->trueLabel('Suspicious only')
-                    ->falseLabel('Normal only'),
+                    ->label('Verdachte activiteit')
+                    ->placeholder('Alle activiteiten')
+                    ->trueLabel('Alleen verdacht')
+                    ->falseLabel('Alleen normaal'),
                 Filter::make('active_sessions')
-                    ->label('Active Sessions')
+                    ->label('Actieve sessies')
                     ->query(
                         fn(Builder $query): Builder => $query
                             ->where('login_successful', true)
@@ -115,14 +115,14 @@ class AuthenticationLogsTable
             ])
             ->recordActions([
                 Action::make('view')
-                    ->label('View Details')
+                    ->label('Details bekijken')
                     ->icon('heroicon-o-eye')
                     ->modalContent(function (AuthenticationLog $record) {
                         return view('filament.resources.authentication-log.view', [
                             'record' => $record,
                         ]);
                     })
-                    ->modalHeading('Authentication Log Details'),
+                    ->modalHeading('Details inlogpoging'),
             ])
             ->defaultSort('login_at', 'desc')
             ->poll('30s');
