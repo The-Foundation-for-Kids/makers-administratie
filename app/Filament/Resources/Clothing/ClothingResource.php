@@ -476,7 +476,7 @@ class ClothingResource extends Resource
                     )
                     ->action(function (Collection $records, array $data): void {
                         foreach ($records as $record) {
-                            if ($record->isStatus('Ingevoerd') || $record->setStatus('Aangeboden')) {
+                            if ($record->isStatus('Ingevoerd') || $record->isStatus('Aangeboden')) {
 
                                 $record->Datum_Verlopen_Voortoekenning = $data['verloopdatum'];
                                 $record->setStatus('Aangeboden');
