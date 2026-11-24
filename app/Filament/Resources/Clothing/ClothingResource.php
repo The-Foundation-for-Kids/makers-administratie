@@ -371,6 +371,26 @@ class ClothingResource extends Resource
                         }
                     })
                     ->deselectRecordsAfterCompletion(),
+                BulkAction::make('Opgepakt => Verzonden')
+                    ->visible(
+                        function ($livewire) {
+                            if (isset($livewire->tableFilters['Status']['values'])) {
+                                if (in_array('Opgepakt', $livewire->tableFilters['Status']['values'])) {
+                                    return true;
+                                };
+                            }
+                            return false;
+                        }
+                    )
+                    ->action(function (Collection $records) {
+                        foreach ($records as $record) {
+                            if ($record->isStatus('Opgepakt')) {
+                                $record->setStatus('Verzonden');
+                                $record->save();
+                            }
+                        }
+                    })
+                    ->deselectRecordsAfterCompletion(),
                 BulkAction::make('Ingevoerd => Opgepakt+toekenning')
                     ->visible(
                         function ($livewire) {
