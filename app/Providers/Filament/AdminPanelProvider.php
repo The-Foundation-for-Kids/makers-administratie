@@ -37,6 +37,7 @@ class AdminPanelProvider extends PanelProvider
             ->login()
             ->profile(EditProfile::class)
             ->passwordReset()
+            ->spa()
             ->favicon(asset('images/favicon-32x32.png'))
             // ->brandLogo(asset('images/favicon-192x192.png'))
             ->colors([
