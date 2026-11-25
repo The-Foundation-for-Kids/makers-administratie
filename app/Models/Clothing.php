@@ -224,10 +224,10 @@ class Clothing extends Model
         self::creating(function (Clothing $item) {
 
             $code = $item->agency->Code;
-            $year = substr($item->year, -2);
-            if ($year == "") {
-                $year = substr(date("Y"), -2);
+            if (blank($item->year)) {
+                $item->year = date("Y");
             }
+            $year = substr($item->year, -2);
             $filter = $code . $year . "%";
             $prev = Clothing::where('code', 'like', $filter)->latest('id')->first();
             if ($prev) {

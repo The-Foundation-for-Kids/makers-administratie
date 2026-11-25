@@ -136,7 +136,7 @@ class CreatorHistoryResource extends Resource
             ->filters([
                 SelectFilter::make('year')
                     ->label('Jaar')
-                    ->options(fn(): array =>CreatorHistory::query()->withArchived()->where('maakster_id', '=', auth()->user()->id)->wherenotin('Status', ['Opgepakt', 'Klaar'])->select('year')->distinct()->pluck('year', 'year')->sort()->all())
+                    ->options(fn(): array =>CreatorHistory::query()->withArchived()->where('maakster_id', '=', auth()->user()->id)->wherenotin('Status', ['Opgepakt', 'Klaar'])->whereNotNull('year')->where('year', '!=', '')->select('year')->distinct()->pluck('year', 'year')->sort()->all())
                     ->default(now()->format('Y')),
             ])
             ->recordActions([])
