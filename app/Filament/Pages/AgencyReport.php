@@ -301,7 +301,7 @@ class AgencyReport extends Page implements HasTable
             ->filters([
                 SelectFilter::make('clothing.year')
                     ->label('Jaar')
-                    ->options(fn(): array => CreatorHistory::query()->withArchived()->select('year')->distinct()->pluck('year', 'year')->sort()->all())
+                    ->options(fn(): array => CreatorHistory::query()->withArchived()->whereNotNull('year')->where('year', '!=', '')->select('year')->distinct()->pluck('year', 'year')->sort()->all())
 
                     ->query(fn(Builder $query, $data) => $query
                         ->whereDoesntHave(
