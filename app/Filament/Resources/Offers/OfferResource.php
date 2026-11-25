@@ -58,15 +58,25 @@ class OfferResource extends Resource
                         'Aangeboden' => 'Aangeboden',
                         'Opgepakt' => 'Oppakken',
                     ])->reactive()
-                    ->afterStateUpdated(function (Offer $record, callable $get) {
-
-                        $record->setStatus($get('Status'));
-                        if ($get('Status') == "Opgepakt") {
-                            $record->maakster_id = auth()->user()->id;
-                            $record->Maakster = auth()->user()->name;
+                    ->afterStateUpdated(function ($livewire, Offer $record, callable $get) {
+                        if ($get('Status') != 'Opgepakt') {
+                            return;
                         }
 
-                        $record->save();
+                        // Via oppakken(), zodat twee maaksters niet tegelijk dezelfde aanvraag krijgen.
+                        if ($record->oppakken()) {
+                            Notification::make()
+                                ->title('Aanvraag ' . $record->Code . ' is toegewezen aan jou')
+                                ->success()
+                                ->send();
+                        } else {
+                            Notification::make()
+                                ->title('Aanvraag ' . $record->Code . ' is net door iemand anders opgepakt')
+                                ->warning()
+                                ->send();
+                        }
+
+                        $livewire->redirect(static::getUrl('index'));
                     }),
 
                 Section::make()
@@ -279,7 +289,6 @@ class OfferResource extends Resource
             ->where(
                 function ($q) {
                     $q->where('Datum_Verlopen_Voortoekenning', '<=', Carbon::now())
-                        ->orwhere('Gebruiker_Voortoekenning', auth()->user()->id)
                         ->orwherenull('Datum_Verlopen_Voortoekenning');
                 }
 

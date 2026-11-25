@@ -11,6 +11,13 @@ class EditCompleted extends EditRecord
 {
     protected static string $resource = CompletedResource::class;
 
+    protected $listeners = ['refreshForm' => 'refreshForm'];
+
+    public function refreshForm()
+    {
+        $this->fillForm();
+    }
+
     protected function getHeaderActions(): array
     {
         return [

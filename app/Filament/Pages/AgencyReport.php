@@ -6,6 +6,7 @@ use App\Models\Agency;
 use App\Models\AgencyPlanning;
 use App\Models\CreatorHistory;
 use Filament\Pages\Page;
+use BezhanSalleh\FilamentShield\Traits\HasPageShield;
 
 use Filament\Tables\Columns\Summarizers\Average;
 use Filament\Tables\Columns\Summarizers\Range;
@@ -31,6 +32,7 @@ class AgencyReport extends Page implements HasTable
 {
 
     use InteractsWithTable;
+    use HasPageShield;
 
 
     protected string $model = Agency::class;

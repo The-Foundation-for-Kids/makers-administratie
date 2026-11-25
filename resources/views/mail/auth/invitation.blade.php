@@ -15,7 +15,7 @@ Je hebt hiervoor 4 weken de tijd, of 6 weken wanneer het om een verjaardagsetje 
 
 In het aanvragensysteem staat onder ‘Handleiding maakster’ stap voor stap uitgelegd hoe alles werkt.
 
-En natuurlijk hoef je het niet allemaal alleen uit te zoeken. Heb je vragen of loop je ergens tegenaan? Neem gerust contact op met Monique Latta via Messenger of stuur een mail naar info@thefoundationforkids.nl. We helpen je graag!
+En natuurlijk hoef je het niet allemaal alleen uit te zoeken. Heb je vragen of loop je ergens tegenaan? Neem gerust contact op met Monique Latta via Messenger of stuur een mail naar info@thefoundationforkids.com. We helpen je graag!
 
 Met vriendelijke groet, <br>
 Gebruikers beheer The Foundation for Kids
