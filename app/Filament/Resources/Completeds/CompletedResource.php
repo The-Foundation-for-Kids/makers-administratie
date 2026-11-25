@@ -76,7 +76,7 @@ class CompletedResource extends Resource
 
                                 $record->setStatus($get('Status'));
                                 $record->save();
-                                $livewire->emitSelf('refreshForm');
+                                $livewire->dispatch('refreshForm');
                             }),
                     ])
                     ->columnSpan(['lg' => 1])
@@ -118,7 +118,7 @@ class CompletedResource extends Resource
                             ->required(),
                         TextInput::make('Leeftijd'),
                         TextInput::make('Wens')->required(),
-                        TextInput::make('Kleur'),
+                        TextInput::make('Kleuren'),
                     ])->columnSpan(['lg' => 1]),
                 Section::make()
                     ->schema([
