@@ -57,7 +57,6 @@ class Clothing extends Model
         'TrackAndTraceCode',
         'Kenmerk_Instantie',
         'Activity',
-        'Gebruiker_Voortoekenning',
         'Datum_Verlopen_Voortoekenning',
         'priority',
         'year'

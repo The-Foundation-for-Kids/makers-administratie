@@ -30,7 +30,6 @@ class User extends Authenticatable implements FilamentUser
         'password',
         'active',
         'fb_id',
-        'voortoekenning',
         'notes',
         'selected_year'
     ];

@@ -93,7 +93,6 @@ class UserResource extends Resource
                         CheckboxList::make('roles')
                             ->relationship('roles', 'name', fn(Builder $query) => $query->where('name', '!=', 'super_admin'))
                             ->columns(2),
-                        Toggle::make('voortoekenning')->label('Voortoekenning'),
 
                     ])
             ]);
@@ -140,11 +139,6 @@ class UserResource extends Resource
                     ->toggleable(),
             ])->defaultSort('created_at', 'desc')
             ->filters([
-                Filter::make('Voortoekenning')
-                    ->query(
-                        fn(Builder $query): Builder => $query
-                            ->where('voortoekenning', '1')
-                    ),
                 Filter::make('Maaksters')
                     ->query(
                         fn(Builder $query): Builder =>

@@ -289,7 +289,6 @@ class OfferResource extends Resource
             ->where(
                 function ($q) {
                     $q->where('Datum_Verlopen_Voortoekenning', '<=', Carbon::now())
-                        ->orwhere('Gebruiker_Voortoekenning', auth()->user()->id)
                         ->orwherenull('Datum_Verlopen_Voortoekenning');
                 }
 
