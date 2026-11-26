@@ -40,6 +40,7 @@ jobs:
           cat > .env <<'EOF'
           APP_NAME="Browsertest"
           APP_ENV=ci
+          APP_KEY=
           APP_DEBUG=true
           APP_URL=http://127.0.0.1:8123
           LOG_CHANNEL=single
@@ -58,9 +59,18 @@ jobs:
           php artisan migrate:fresh --force --seed --seeder=BrowserTestSeeder
       - name: Start app
         run: |
-          PHP_CLI_SERVER_WORKERS=4 php artisan serve --host=127.0.0.1 --port=8123 > storage/logs/server.log 2>&1 &
-          for i in $(seq 1 30); do curl -sf http://127.0.0.1:8123/login > /dev/null && exit 0; sleep 1; done
-          echo "App start niet"; cat storage/logs/server.log; exit 1
+          # --no-reload is nodig om echt 4 workers te krijgen.
+          PHP_CLI_SERVER_WORKERS=4 php artisan serve --no-reload --host=127.0.0.1 --port=8123 > storage/logs/server.log 2>&1 &
+          # Het eerste verzoek is traag (nog niets gecachet); daarom ruim wachten.
+          for i in $(seq 1 30); do
+            status=$(curl -s -o /dev/null -w "%{http_code}" --max-time 60 http://127.0.0.1:8123/login || true)
+            [ "$status" = "200" ] && exit 0
+            sleep 2
+          done
+          echo "App start niet (laatste status: $status)"
+          echo "--- server.log"; cat storage/logs/server.log
+          echo "--- laravel.log"; tail -n 60 storage/logs/laravel.log || true
+          exit 1
       - name: Setup Node
         uses: actions/setup-node@v5
         with:
