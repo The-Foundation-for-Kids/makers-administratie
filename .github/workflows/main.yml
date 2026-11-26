@@ -33,6 +33,9 @@ jobs:
         with:
           php-version: 8.4
           extensions: pdo_mysql, zip, gd, intl, bcmath
+          # Geen Xdebug: dat maakt PHP enkele keren trager en laat verzoeken over de 30 seconden gaan.
+          coverage: none
+          ini-values: opcache.enable_cli=1
       - name: Install Composer Dependencies
         run: composer install --no-dev --no-progress --no-interaction --prefer-dist
       - name: Prepare app for tests
@@ -41,6 +44,7 @@ jobs:
           APP_NAME="Browsertest"
           APP_ENV=ci
           APP_KEY=
+          APP_LOCALE=nl
           APP_DEBUG=true
           APP_URL=http://127.0.0.1:8123
           LOG_CHANNEL=single

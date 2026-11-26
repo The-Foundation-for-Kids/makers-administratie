@@ -92,14 +92,19 @@ export async function probeerInloggen(page: Page, email: string, password: strin
     let laatste: InlogUitkomst = { uitkomst: 'geblokkeerd', veldfout: '' };
     for (let poging = 1; poging <= 3; poging++) {
         await page.goto('/login');
+        // Was een vorige (trage) poging toch gelukt, dan stuurt /login door.
+        if (!new URL(page.url()).pathname.startsWith('/login')) {
+            return { uitkomst: 'gelukt', veldfout: '' };
+        }
         await page.locator('#form\\.email').fill(email);
         await page.locator('#form\\.password').fill(password);
         await page.locator('button[type="submit"]').click();
 
         const fout = page.locator('.fi-fo-field-wrp-error-message').first();
+        // Ruim wachten: op een verse installatie duurt het eerste inloggen soms 25+ seconden.
         const gelukt = await Promise.race([
-            page.waitForURL((url) => !url.pathname.startsWith('/login'), { timeout: 15_000 }).then(() => true),
-            fout.waitFor({ state: 'visible', timeout: 15_000 }).then(() => false),
+            page.waitForURL((url) => !url.pathname.startsWith('/login'), { timeout: 45_000 }).then(() => true),
+            fout.waitFor({ state: 'visible', timeout: 45_000 }).then(() => false),
         ]).catch(() => false);
         if (gelukt) {
             return { uitkomst: 'gelukt', veldfout: '' };
