@@ -6,7 +6,84 @@ on:
       - test
       - sendy
 jobs:
+  # Browsertests tegen een eigen kopie van de site met een lege testdatabase.
+  # Slagen ze niet, dan wordt er niet gedeployd. Zie tests/browser/README.md.
+  browser-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: makers_browsertest
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -proot"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=20
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v5
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.4
+          extensions: pdo_mysql, zip, gd, intl, bcmath
+      - name: Install Composer Dependencies
+        run: composer install --no-dev --no-progress --no-interaction --prefer-dist
+      - name: Prepare app for tests
+        run: |
+          cat > .env <<'EOF'
+          APP_NAME="Browsertest"
+          APP_ENV=ci
+          APP_DEBUG=true
+          APP_URL=http://127.0.0.1:8123
+          LOG_CHANNEL=single
+          DB_CONNECTION=mysql
+          DB_HOST=127.0.0.1
+          DB_PORT=3306
+          DB_DATABASE=makers_browsertest
+          DB_USERNAME=root
+          DB_PASSWORD=root
+          SESSION_DRIVER=database
+          CACHE_STORE=file
+          QUEUE_CONNECTION=sync
+          MAIL_MAILER=log
+          EOF
+          php artisan key:generate --force
+          php artisan migrate:fresh --force --seed --seeder=BrowserTestSeeder
+      - name: Start app
+        run: |
+          PHP_CLI_SERVER_WORKERS=4 php artisan serve --host=127.0.0.1 --port=8123 > storage/logs/server.log 2>&1 &
+          for i in $(seq 1 30); do curl -sf http://127.0.0.1:8123/login > /dev/null && exit 0; sleep 1; done
+          echo "App start niet"; cat storage/logs/server.log; exit 1
+      - name: Setup Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: 20
+          cache: npm
+      - name: Install Playwright
+        run: |
+          npm ci
+          npx playwright install --with-deps chromium
+      - name: Run browser tests
+        run: npx playwright test --project=ci
+      - name: Upload test report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: browsertests-rapport
+          path: |
+            playwright-report/
+            test-results/
+            storage/logs/
+          retention-days: 14
+
   build:
+    needs: browser-tests
     runs-on: ubuntu-latest
     steps:
       - name: Set env BRANCH
@@ -85,5 +162,43 @@ jobs:
             php artisan filament:optimize
             exit
 
+  # Na een deploy naar test: alleen-lezen-controles tegen de test-site zelf.
+  # Draait alleen als de testaccounts als secrets zijn ingesteld.
+  test-site-check:
+    needs: build
+    if: github.ref == 'refs/heads/test'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      BASE_URL: ${{ vars.TEST_SITE_URL || 'https://kledingmakentest.thefoundationforkids.com' }}
+      TEST_ADMIN_EMAIL: ${{ secrets.TEST_ADMIN_EMAIL }}
+      TEST_ADMIN_PASSWORD: ${{ secrets.TEST_ADMIN_PASSWORD }}
+      TEST_MAAKSTER1_EMAIL: ${{ secrets.TEST_MAAKSTER1_EMAIL }}
+      TEST_MAAKSTER1_PASSWORD: ${{ secrets.TEST_MAAKSTER1_PASSWORD }}
+      TEST_INZAMELPUNT_EMAIL: ${{ secrets.TEST_INZAMELPUNT_EMAIL }}
+      TEST_INZAMELPUNT_PASSWORD: ${{ secrets.TEST_INZAMELPUNT_PASSWORD }}
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v5
+      - name: Setup Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: 20
+          cache: npm
+      - name: Install Playwright
+        run: |
+          npm ci
+          npx playwright install --with-deps chromium
+      - name: Run read-only checks against test site
+        run: npx playwright test --project=test-site
+      - name: Upload test report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-site-rapport
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 14
 
 
