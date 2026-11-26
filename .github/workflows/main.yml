@@ -2,6 +2,7 @@ name: scp files
 on:
   push:
     branches:
+      - main # alleen browsertests, geen deploy
       - prod
       - test
       - sendy
@@ -84,6 +85,8 @@ jobs:
 
   build:
     needs: browser-tests
+    # Op main alleen testen; deployen gebeurt via test, prod en sendy.
+    if: github.ref != 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
       - name: Set env BRANCH

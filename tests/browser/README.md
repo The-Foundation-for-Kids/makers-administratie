@@ -4,6 +4,9 @@ Playwright-tests die de site in een echte browser doorklikken, per rol.
 
 ## Wanneer ze draaien
 
+Bij elke push naar `main` draaien alleen de browsertests (stap 1), zonder
+deploy. Zo zie je meteen of een wijziging iets stuk maakt.
+
 Bij elke push naar `prod`, `test` of `sendy` (zie `.github/workflows/main.yml`):
 
 1. **`browser-tests`**: GitHub start een eigen kopie van de site met een lege
