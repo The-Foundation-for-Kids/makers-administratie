@@ -49,6 +49,8 @@ use App\Filament\Resources\ClothingResource\RelationManagers;
 use App\Filament\Resources\Clothing\Pages\CreateClothing;
 use App\Filament\Resources\Clothing\Widgets\StatsOverview;
 use Filament\Infolists\Components\TextEntry;
+use Filament\Notifications\Notification;
+use App\Filament\Resources\Completeds\CompletedResource;
 
 class ClothingResource extends Resource
 {
@@ -87,7 +89,7 @@ class ClothingResource extends Resource
 
                                 $record->setStatus($get('Status'));
                                 $record->save();
-                                $livewire->dispatch('refreshForm');
+                                static::naStatuswijziging($livewire, $record);
                             }),
 
                     ])
@@ -555,5 +557,33 @@ class ClothingResource extends Resource
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()->where('Status', '!=', 'Afgehandeld');
+    }
+
+    /**
+     * Na een statuswijziging op een detailpagina. Gaat een aanvraag van of naar
+     * Afgehandeld, dan hoort hij bij een andere lijst en kan deze pagina hem niet
+     * meer laden. Stuur dan door naar dezelfde aanvraag in de juiste lijst.
+     */
+    public static function naStatuswijziging($livewire, Clothing $record): void
+    {
+        $doel = $record->Status === 'Afgehandeld' ? CompletedResource::class : static::class;
+
+        if ($livewire::getResource() === $doel) {
+            $livewire->dispatch('refreshForm');
+
+            return;
+        }
+
+        $lijst = $doel === CompletedResource::class ? 'Afgehandeld' : 'Aanvragen';
+        $magBewerken = auth()->user()->can($doel === CompletedResource::class ? 'Update:Completed' : 'Update:Clothing');
+
+        Notification::make()
+            ->title('Aanvraag ' . $record->Code . ' staat nu onder ' . $lijst)
+            ->success()
+            ->send();
+
+        $livewire->redirect($magBewerken
+            ? $doel::getUrl('edit', ['record' => $record->getKey()])
+            : $livewire::getResource()::getUrl('index'));
     }
 }

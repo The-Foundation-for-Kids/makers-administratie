@@ -15,6 +15,7 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Infolists\Components\TextEntry;
+use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Tabs;
@@ -67,7 +68,18 @@ class ClothingRelationManager extends RelationManager
 
                                 $record->setStatus($get('Status'));
                                 $record->save();
-                                $livewire->dispatch('refreshForm');
+
+                                // Afgehandelde aanvragen staan niet in deze tab; het venster kan
+                                // daarna niets meer opslaan. Sluit het en zeg waar hij nu staat.
+                                if ($record->Status === 'Afgehandeld') {
+                                    Notification::make()
+                                        ->title('Aanvraag ' . $record->Code . ' staat nu onder Afgehandeld')
+                                        ->body('Andere wijzigingen in dit venster zijn niet opgeslagen.')
+                                        ->success()
+                                        ->send();
+
+                                    $livewire->unmountAction();
+                                }
                             }),
                         DateTimePicker::make('Datum_Verlopen_Voortoekenning')
                             ->visible()

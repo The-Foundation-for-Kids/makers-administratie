@@ -234,7 +234,7 @@ class OfferResource extends Resource
             ->toolbarActions([
 
                 BulkAction::make('Oppakken')
-                    ->action(function (Collection $records) {
+                    ->action(function ($livewire, Collection $records) {
 
                         $toegewezen = array();
                         $nietGelukt = array();
@@ -244,6 +244,12 @@ class OfferResource extends Resource
                             } else {
                                 array_push($nietGelukt, $record->Code);
                             }
+                        }
+
+                        // Aanvragen die al door iemand anders zijn opgepakt geeft Filament niet meer door.
+                        $gemist = array_diff(array_map('strval', $livewire->selectedTableRecords), $records->modelKeys());
+                        if (count($gemist) > 0) {
+                            array_push($nietGelukt, ...Offer::query()->whereKey($gemist)->pluck('Code')->all());
                         }
 
                         if (count($toegewezen) > 0) {

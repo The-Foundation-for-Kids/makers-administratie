@@ -15,6 +15,7 @@ use Filament\Tables;
 use App\Models\Agency;
 use App\Models\Clothing;
 use App\Models\Completed;
+use App\Filament\Resources\Clothing\ClothingResource;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
 
@@ -76,7 +77,7 @@ class CompletedResource extends Resource
 
                                 $record->setStatus($get('Status'));
                                 $record->save();
-                                $livewire->dispatch('refreshForm');
+                                ClothingResource::naStatuswijziging($livewire, $record);
                             }),
                     ])
                     ->columnSpan(['lg' => 1])
