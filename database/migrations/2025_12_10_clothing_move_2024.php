@@ -14,6 +14,10 @@ return new class extends Migration {
 
     public function up()
     {
+        // Alleen bij de oorspronkelijke overzetting; in een lege database bestaat deze tabel niet.
+        if (! Schema::hasTable('clothing_2024')) {
+            return;
+        }
 
         $sourceQuery = DB::table('clothing_2024')
             ->select('Activity', 'agency_id', 'Code', 'created_at', 'Datum_Verlopen_Voortoekenning', 'DatumMaakster', 'deleted_at', 'Gebruiker_Ingevoerd', 'Gebruiker_Voortoekenning', 'Geslacht', 'houdtVan', 'id', 'Kenmerk_Geprint', 'Kenmerk_Instantie', 'Kleding_Deadline', 'Kleuren', 'Leeftijd', 'Maakster', 'maakster_id', 'Maat', 'Notities', 'Question_Filled', 'Status', 'TrackAndTraceCode', 'updated_at', 'Wens');
