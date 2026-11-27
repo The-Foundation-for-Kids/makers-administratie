@@ -18,9 +18,9 @@ class ListUsers extends ListRecords
 
 
         return [
-            Action::make('Maaksters')->url(fn(): string => route('filament.admin.resources.user.index', 'filters[Maaksters][isActive]=true))')),
-            Action::make('Beheerders')->url(fn(): string => route('filament.admin.resources.user.index', 'filters[Beheerders][isActive]=true))')),
-            Action::make('Overig')->url(fn(): string => route('filament.admin.resources.user.index', 'filters[Overig][isActive]=true))')),
+            Action::make('Maaksters')->url(fn(): string => route('filament.admin.resources.user.index', ['filters' => ['Maaksters' => ['isActive' => true]]])),
+            Action::make('Beheerders')->url(fn(): string => route('filament.admin.resources.user.index', ['filters' => ['Beheerders' => ['isActive' => true]]])),
+            Action::make('Overig')->url(fn(): string => route('filament.admin.resources.user.index', ['filters' => ['Overig' => ['isActive' => true]]])),
             CreateAction::make(),
         ];
     }

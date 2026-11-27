@@ -154,6 +154,8 @@ class AgencyResource extends Resource
                 Column::make('Adres'),
                 Column::make('Postcode'),
                 Column::make('Vestigingsplaats')->heading('Plaats'),
+                Column::make('verzamel_user.name')->heading('Inzamelpunt'),
+                Column::make('verzamel_user.email')->heading('Email inzamelpunt'),
                 Column::make('Bezorg_Naam')->heading('Bezorg naam'),
                 Column::make('Bezorg_Email')->heading('Bezorg email'),
                 Column::make('Bezorg_Adres')->heading('Bezorg adres'),
@@ -162,10 +164,9 @@ class AgencyResource extends Resource
                 Column::make('Overige_Mail')->heading('Overige mail'),
                 Column::make('KVK-nummer'),
                 Column::make('Partner_2022')->heading('Partner 2022'),
+                // Brede tekstkolommen als laatste, zodat de rest overzichtelijk blijft.
                 Column::make('Extra_info')->heading('Extra info'),
                 Column::make('Bezoek'),
-                Column::make('verzamel_user.name')->heading('Inzamelpunt'),
-                Column::make('verzamel_user.email')->heading('Email inzamelpunt'),
             ])
             ->withWriterType(Excel::XLSX)
             ->withFilename('Instanties - ' . date('Y-m-d'));
