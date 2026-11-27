@@ -31,7 +31,6 @@ class User extends Authenticatable implements FilamentUser
         'active',
         'fb_id',
         'notes',
-        'selected_year'
     ];
 
     public function agency()

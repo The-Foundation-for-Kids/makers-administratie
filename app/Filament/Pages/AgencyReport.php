@@ -21,7 +21,6 @@ use Illuminate\Database\Eloquent\Builder;
 
 use Illuminate\Database\Query\JoinClause;
 use Illuminate\Support\Facades\DB;
-use Livewire\Attributes\On;
 use Maatwebsite\Excel\Excel;
 use pxlrbt\FilamentExcel\Actions\ExportAction;
 use pxlrbt\FilamentExcel\Actions\ExportBulkAction;
@@ -48,12 +47,6 @@ class AgencyReport extends Page implements HasTable
 
     protected string $view = 'filament.pages.agency-report';
 
-    #[On('refreshPage')]
-    public function refreshPage(): void
-    {
-        rand(0, 100);
-        //dd('test');
-    }
     public function getHeaderActions(): array
     {
         return [
